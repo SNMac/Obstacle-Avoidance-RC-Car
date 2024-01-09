@@ -5,8 +5,8 @@
  *      Author: Macmillan
  */
 
-#ifndef INC_MOTOR_DRIVER_H_
-#define INC_MOTOR_DRIVER_H_
+#ifndef INC_MOTOR_DRIVER_ESP32CAM_H_
+#define INC_MOTOR_DRIVER_ESP32CAM_H_
 
 #include "main.h"
 
@@ -18,4 +18,4 @@ void turn_left(void);
 void turn_right(void);
 void stop(void);
 
-#endif /* INC_MOTOR_DRIVER_H_ */
+#endif /* INC_MOTOR_DRIVER_ESP32CAM_H_ */

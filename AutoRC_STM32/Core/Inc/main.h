@@ -58,9 +58,17 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
+void delay_us(uint16_t time);
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define PC0_ESP32_FL_Pin GPIO_PIN_0
+#define PC0_ESP32_FL_GPIO_Port GPIOC
+#define PC1_ESP32_SLP_Pin GPIO_PIN_1
+#define PC1_ESP32_SLP_GPIO_Port GPIOC
+#define PC2_ESP32_INT_Pin GPIO_PIN_2
+#define PC2_ESP32_INT_GPIO_Port GPIOC
 #define PA0_TIM2_PWM_L_Pin GPIO_PIN_0
 #define PA0_TIM2_PWM_L_GPIO_Port GPIOA
 #define PA1_TIM2_PWM_R_Pin GPIO_PIN_1

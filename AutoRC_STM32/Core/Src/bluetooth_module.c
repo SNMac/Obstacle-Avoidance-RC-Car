@@ -13,18 +13,21 @@ uint8_t rx_c;
 uint8_t tx_c[32];
 uint8_t tx_dist[256];
 
+// from motor_driver_esp32cam.c
 extern uint8_t cur_dir;
+extern uint8_t cur_fl;
+extern uint8_t cur_slp;
 
 void init_bt(UART_HandleTypeDef *huart) {
 	m_huart = huart;
 }
 
-void send_distance(uint8_t L_Dist, uint8_t C_Dist) {
+void send_distance(uint8_t L_Dist, uint8_t C_Dist, uint8_t R_Dist) {
 	sprintf((char*) tx_dist,
-			"cur_dir : %c\r\nL_Dist : %d cm\r\nC_Dist : %d cm\r\nR_Dist : 0 cm\r\n==================\r\n",
-			cur_dir, L_Dist, C_Dist);
+			"cur_dir : %c\r\nL_Dist : %d cm\r\nC_Dist : %d cm\r\nR_Dist : %d cm\r\nFlashlight : %c\r\nSleep : %c\r\n==================\r\n",
+			cur_dir, L_Dist, C_Dist, R_Dist, cur_fl, cur_slp);
 	printf("%s", tx_dist);
-	HAL_UART_Transmit(m_huart, tx_dist, strlen((char*) tx_dist), 100);
+	HAL_UART_Transmit(m_huart, tx_dist, strlen((char*) tx_dist), 200);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {

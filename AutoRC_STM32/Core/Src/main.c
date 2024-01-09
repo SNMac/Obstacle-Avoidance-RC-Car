@@ -25,7 +25,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "ultrasonic_sensor.h"
-#include "motor_driver.h"
 #include "bluetooth_module.h"
 
 /* USER CODE END Includes */
@@ -80,12 +79,18 @@ static void MX_TIM4_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
+void delay_us(uint16_t time) {  // delay for microseconds
+	__HAL_TIM_SET_COUNTER(&htim3, 0);
+	while ((__HAL_TIM_GET_COUNTER(&htim3)) < time)
+		;
+}
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) { // read & send distance every 100ms
 	if (htim->Instance == htim4.Instance) {
 		if (HAL_GPIO_ReadPin(PA11_BT_STATE_GPIO_Port, PA11_BT_STATE_Pin) == 0) // if bluetooth connection is lost
 			drive('h');  // stop car
 		HCSR04_Read();
-		send_distance(L_Dist, C_Dist);
+		send_distance(L_Dist, C_Dist, R_Dist);
 	}
 }
 
@@ -153,9 +158,9 @@ int main(void)
 	ultrasonic_init(&htim3);
 	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_2);
-//	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_3);
+	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_3);
 
-// motor_driver
+	// motor_driver_esp32cam
 	motor_init(&htim2);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
@@ -170,10 +175,6 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
-
-//		HCSR04_Read();
-//		send_distance(L_Dist, C_Dist);
-//		HAL_Delay(1000);
 
     /* USER CODE END WHILE */
 
@@ -370,7 +371,7 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 720 - 1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 10000 - 1;
+  htim4.Init.Period = 20000 - 1;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
@@ -473,18 +474,25 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, PC0_ESP32_FL_Pin|PC1_ESP32_SLP_Pin|PC2_ESP32_INT_Pin|PC9_TRIG_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, PB10_MTR_INB_Pin|PB4_MTR_INC_Pin|PB5_MTR_IND_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(PC9_TRIG_GPIO_Port, PC9_TRIG_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(PA8_MTR_INA_GPIO_Port, PA8_MTR_INA_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pins : PC0_ESP32_FL_Pin PC1_ESP32_SLP_Pin PC2_ESP32_INT_Pin PC9_TRIG_Pin */
+  GPIO_InitStruct.Pin = PC0_ESP32_FL_Pin|PC1_ESP32_SLP_Pin|PC2_ESP32_INT_Pin|PC9_TRIG_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB10_MTR_INB_Pin PB4_MTR_INC_Pin PB5_MTR_IND_Pin */
   GPIO_InitStruct.Pin = PB10_MTR_INB_Pin|PB4_MTR_INC_Pin|PB5_MTR_IND_Pin;
@@ -492,13 +500,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PC9_TRIG_Pin */
-  GPIO_InitStruct.Pin = PC9_TRIG_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(PC9_TRIG_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PA8_MTR_INA_Pin */
   GPIO_InitStruct.Pin = PA8_MTR_INA_Pin;

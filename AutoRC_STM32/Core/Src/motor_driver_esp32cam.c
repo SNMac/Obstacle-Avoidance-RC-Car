@@ -5,13 +5,15 @@
  *      Author: Macmillan
  */
 
-#include "motor_driver.h"
+#include "motor_driver_esp32cam.h"
 
 #define DUTY(n) n*10-1
 
 static TIM_HandleTypeDef *m_htim;
 
 uint8_t cur_dir = 'h'; // w = forward, s = back, a = turn_left, d = turn_right, h = halt
+uint8_t cur_fl = 'F';  // ESP32-CAM FlashLight status
+uint8_t cur_slp = 'F';  // ESP32-CAM Deep Sleep status
 
 void motor_init(TIM_HandleTypeDef *htim) {
 	m_htim = htim;
@@ -19,7 +21,7 @@ void motor_init(TIM_HandleTypeDef *htim) {
 }
 
 void drive(uint8_t dir) {
-	m_htim->Instance->CCR1 = DUTY(97); // left motor duty = 97%
+	m_htim->Instance->CCR1 = DUTY(100); // left motor duty = 100%
 	m_htim->Instance->CCR2 = DUTY(100); // right motor duty = 100%
 	switch (dir) {
 	case 'w':
@@ -61,6 +63,31 @@ void drive(uint8_t dir) {
 			turn_right();
 		}
 		break;
+
+	case 'f':
+		if (HAL_GPIO_ReadPin(PC0_ESP32_FL_GPIO_Port, PC0_ESP32_FL_Pin) == 0) {
+			HAL_GPIO_WritePin(PC0_ESP32_FL_GPIO_Port, PC0_ESP32_FL_Pin, 1);
+			cur_fl = 'T';
+		} else {
+			HAL_GPIO_WritePin(PC0_ESP32_FL_GPIO_Port, PC0_ESP32_FL_Pin, 0);
+			cur_fl = 'F';
+		}
+		break;
+
+	case 'p':
+		if (cur_slp == 'F') {
+			HAL_GPIO_WritePin(PC1_ESP32_SLP_GPIO_Port, PC1_ESP32_SLP_Pin, 1);
+			HAL_Delay(1);
+			HAL_GPIO_WritePin(PC1_ESP32_SLP_GPIO_Port, PC1_ESP32_SLP_Pin, 0);
+			cur_slp = 'T';
+		} else {
+			HAL_GPIO_WritePin(PC2_ESP32_INT_GPIO_Port, PC2_ESP32_INT_Pin, 1);
+			HAL_Delay(1);
+			HAL_GPIO_WritePin(PC2_ESP32_INT_GPIO_Port, PC2_ESP32_INT_Pin, 0);
+			cur_slp = 'F';
+		}
+		break;
+
 
 	default:
 		cur_dir = 'h';

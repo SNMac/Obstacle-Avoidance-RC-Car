@@ -1,5 +1,5 @@
-Core/Src/motor_driver.o: ../Core/Src/motor_driver.c \
- ../Core/Inc/motor_driver.h ../Core/Inc/main.h \
+Core/Src/motor_driver_esp32cam.o: ../Core/Src/motor_driver_esp32cam.c \
+ ../Core/Inc/motor_driver_esp32cam.h ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -25,7 +25,7 @@ Core/Src/motor_driver.o: ../Core/Src/motor_driver.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-../Core/Inc/motor_driver.h:
+../Core/Inc/motor_driver_esp32cam.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:

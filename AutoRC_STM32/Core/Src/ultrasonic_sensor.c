@@ -29,12 +29,6 @@ void ultrasonic_init(TIM_HandleTypeDef *htim) {
 	m_htim = htim;
 }
 
-void delay_us(uint16_t time) {  // delay for microseconds
-	__HAL_TIM_SET_COUNTER(m_htim, 0);
-	while ((__HAL_TIM_GET_COUNTER(m_htim)) < time)
-		;
-}
-
 void HCSR04_Read(void) {
 	HAL_GPIO_WritePin(PC9_TRIG_GPIO_Port, PC9_TRIG_Pin, 1); // pull the TRIG pin HIGH
 	delay_us(10);  // wait for 10 us
@@ -42,7 +36,7 @@ void HCSR04_Read(void) {
 
 	__HAL_TIM_ENABLE_IT(m_htim, TIM_IT_CC1);
 	__HAL_TIM_ENABLE_IT(m_htim, TIM_IT_CC2);
-//	__HAL_TIM_ENABLE_IT(m_htim, TIM_IT_CC3);
+	__HAL_TIM_ENABLE_IT(m_htim, TIM_IT_CC3);
 }
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
@@ -97,7 +91,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
 			__HAL_TIM_DISABLE_IT(m_htim, TIM_IT_CC2);
 		}
 	} else if (htim->Instance == m_htim->Instance
-			&& htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3) { // if the interrupt source is channel 2
+			&& htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3) { // if the interrupt source is channel 3
 		if (R_Is_First_Captured == false) { // if the first value is not captured
 			R_IC_Val[0] = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_3); // read the first value
 			R_Is_First_Captured = true;  // set the first captured as true

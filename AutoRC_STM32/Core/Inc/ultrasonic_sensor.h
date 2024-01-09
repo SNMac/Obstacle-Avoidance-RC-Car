@@ -11,7 +11,6 @@
 #include "main.h"
 
 void ultrasonic_init(TIM_HandleTypeDef *htim);
-void delay_us(uint16_t time);
 void HCSR04_Read(void);
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim);
 
