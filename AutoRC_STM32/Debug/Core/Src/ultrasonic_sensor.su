@@ -1,3 +1,0 @@
-../Core/Src/ultrasonic_sensor.c:28:6:ultrasonic_init	16	static
-../Core/Src/ultrasonic_sensor.c:32:6:HCSR04_Read	8	static
-../Core/Src/ultrasonic_sensor.c:42:6:HAL_TIM_IC_CaptureCallback	16	static

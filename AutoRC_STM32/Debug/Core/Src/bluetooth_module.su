@@ -1,3 +1,0 @@
-../Core/Src/bluetooth_module.c:21:6:init_bt	16	static
-../Core/Src/bluetooth_module.c:25:6:send_distance	40	static
-../Core/Src/bluetooth_module.c:33:6:HAL_UART_RxCpltCallback	16	static

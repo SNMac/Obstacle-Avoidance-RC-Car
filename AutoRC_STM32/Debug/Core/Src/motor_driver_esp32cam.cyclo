@@ -1,7 +1,0 @@
-../Core/Src/motor_driver_esp32cam.c:18:6:motor_init	1
-../Core/Src/motor_driver_esp32cam.c:23:6:drive	13
-../Core/Src/motor_driver_esp32cam.c:99:6:forward	1
-../Core/Src/motor_driver_esp32cam.c:106:6:back	1
-../Core/Src/motor_driver_esp32cam.c:113:6:turn_left	1
-../Core/Src/motor_driver_esp32cam.c:120:6:turn_right	1
-../Core/Src/motor_driver_esp32cam.c:127:6:stop	1
