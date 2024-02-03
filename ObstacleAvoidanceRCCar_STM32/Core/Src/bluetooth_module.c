@@ -27,7 +27,7 @@ void send_distance(uint8_t L_Dist, uint8_t C_Dist, uint8_t R_Dist) {
 			"DIR : %c\r\nL : %d cm\r\nC : %d cm\r\nR : %d cm\r\nFL : %c\r\nSLP : %c\r\n\r\n",
 			cur_dir, L_Dist, C_Dist, R_Dist, cur_fl, cur_slp);
 	printf("%s", tx_dist);
-	HAL_UART_Transmit(m_huart, tx_dist, strlen((char*) tx_dist), 100);
+	HAL_UART_Transmit(m_huart, tx_dist, strlen((char*) tx_dist), 150);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
